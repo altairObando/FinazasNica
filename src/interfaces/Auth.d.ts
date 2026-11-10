@@ -12,6 +12,7 @@ export interface User {
     name: string
     surname: string
     phone: string
+    team_id: number,
     team_code: string
     team_name: string
     other_teams: [string]

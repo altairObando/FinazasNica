@@ -1,7 +1,7 @@
 import { AppContext as IAppContext } from '@/interfaces/AppContext';
 import { User } from '@/interfaces/Auth';
 import { authService } from '@/lib/authService';
-import { getValue, removeValue } from '@/lib/secureStore';
+import { getValue, removeValue, setValue } from '@/lib/secureStore';
 import React, { createContext, useEffect, useState } from 'react';
 
 export const AppContext = createContext<IAppContext>({} as IAppContext);
@@ -16,6 +16,7 @@ export const AppProvider: React.FC<React.PropsWithChildren> = ({ children }) =>{
     async function logout(){
         await removeValue('api_token');
         await removeValue('remember');
+        await removeValue('team_id');
         setIsLoggedIn(false);
     }
 
@@ -26,12 +27,11 @@ export const AppProvider: React.FC<React.PropsWithChildren> = ({ children }) =>{
                     remember = await getValue('remember') || null;
                 if( token && remember ){
                     const userInfo = await authService.me();
+                    await setValue('team_id', String(userInfo.team_id));
                     setUser(userInfo);
                     setIsLoggedIn(true);
                 } else {
-                    await removeValue('api_token');
-                    await removeValue('remember');
-                    setIsLoggedIn(false);
+                    logout();
                 }
             } finally {
                 setIsLoading(false);

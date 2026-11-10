@@ -1,11 +1,15 @@
-import { Category } from '@/interfaces/Categories/Category';
+import { Category, CategoryPaginated } from '@/interfaces/Categories/Category';
 import { CategorySummary } from '@/interfaces/Categories/CategorySummary';
 import { AxiosResponse } from 'axios';
 import api from './apiClient';
 
 export const categoryService = {
-    get: async(): Promise<Category[]> =>{
-        const response: AxiosResponse<Category[]> = await api.get('/categories');
+    get: async({ page = 0, size = 10, type = 'OUT' }): Promise<CategoryPaginated> =>{
+        const params = new URLSearchParams();
+        params.append('offset', String(page * size) );
+        params.append('limit', String(size));
+        params.append('type', type);
+        const response: AxiosResponse<CategoryPaginated> = await api.get('/categories/', { params });
         return response.data;
     },
     getById: async(id: number): Promise<Category> =>{

@@ -17,7 +17,7 @@ const CategorySkeleton=()=>(
     </View>
 )
 
-export const CategoriesCard=()=>{
+export const CategoriesCard=({ onCategoriesPress }: { onCategoriesPress: ({summary}: {summary: string}) => void } )=>{
     const theme = useTheme();
     const { user } = useAppProvider();
     const [ summary, setSummary ] = useState<CategorySummary>({ total: 0, income: 0, expense: 0, items: [] } as CategorySummary);
@@ -50,7 +50,7 @@ export const CategoriesCard=()=>{
                         summary.items.map((item: Category)=> {
                             const color = String(item.color).length > 0 ? item.color : theme.colors.primary;
                             const backgroundColor = toTransparentColor(color);
-                            return <View style={{ maxWidth: '50%' }}>
+                            return <View style={{ maxWidth: '50%' }} key={`category-item-${ item.id }`} >
                                     <List.Item
                                     key={`category-item-${ item.id }`}
                                     left={props=> <List.Icon 
@@ -65,7 +65,9 @@ export const CategoriesCard=()=>{
                     }
                 </View>
             )}
-            { !loading && <Button icon='tune-variant' mode='contained'>
+            { !loading && <Button icon='tune-variant' mode='contained' onPress={()=>{
+                onCategoriesPress({ summary: JSON.stringify(summary)});
+            }}>
                 Personalizar Categorias
             </Button>}
         </Card.Content>

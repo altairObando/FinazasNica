@@ -5,5 +5,6 @@ import React from 'react';
 export default function TeamLayout(){
     return <Stack screenOptions={{ header: props => <CustomAppBar {...props} />}}>
         <Stack.Screen name='index' options={{ title: 'Perfil & Categorías'}} />
+        <Stack.Screen name='categories' options={{ title: 'Categorias'}} />
     </Stack>
 }

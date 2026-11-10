@@ -62,11 +62,9 @@ export function RootLayout() {
         return null;
     }
 
-    return <Stack screenOptions={{
-        header: props => <CustomAppBar {...props} />,
-    }}>
+    return <Stack screenOptions={{ header: props => <CustomAppBar {...props} /> }}>
         <Stack.Protected guard={!isLoggedIn}>
-            <Stack.Screen name='login' options={{ 
+            <Stack.Screen name='index' options={{ 
                 title: 'Iniciar Sesión', 
                 headerRight: props => <IconButton {...props} iconColor={ theme.colors.primary } icon='lightbulb-question-outline' contentStyle={{ backgroundColor: `${theme.colors.primary}20` }} />  }}/>
         </Stack.Protected>

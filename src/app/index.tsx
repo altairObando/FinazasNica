@@ -37,8 +37,7 @@ export default function LoginScreen() {
             // Go to account selection.
             router.push({
                 pathname: '/account'
-            });
-            
+            });            
         } catch (error) {
             let message = error instanceof Error ? error.message :  String(error);
             Alert.alert('Login Error', message);

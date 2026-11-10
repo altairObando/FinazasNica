@@ -11,3 +11,7 @@ export interface Category {
     description: string;
     type:        string;
 }
+export interface CategoryPaginated {
+    items: [];
+    count: number;
+}
