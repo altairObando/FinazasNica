@@ -91,8 +91,7 @@ export default function LoginScreen() {
             </Button>
             <Button mode='text' disabled={loading} loading={ loading }>
                 Registrarse
-            </Button>
-            
+            </Button>            
         </Surface>
     );
 }

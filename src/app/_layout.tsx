@@ -7,6 +7,7 @@ import { Stack, ThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { IconButton, PaperProvider, useTheme } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -62,19 +63,21 @@ export function RootLayout() {
         return null;
     }
 
-    return <Stack screenOptions={{ header: props => <CustomAppBar {...props} /> }}>
-        <Stack.Protected guard={!isLoggedIn}>
-            <Stack.Screen name='index' options={{ 
-                title: 'Iniciar Sesión', 
-                headerRight: props => <IconButton {...props} iconColor={ theme.colors.primary } icon='lightbulb-question-outline' contentStyle={{ backgroundColor: `${theme.colors.primary}20` }} />  }}/>
-        </Stack.Protected>
-        <Stack.Protected guard={isLoggedIn}>
-            <Stack.Screen name='(app)' options={{ headerShown: false }} />
-            <Stack.Screen 
-                name='account'
-                options={{
-                    title: 'Configuración del hogar'
-                }}/>
-        </Stack.Protected>
-    </Stack>
+    return <GestureHandlerRootView style={{ flex: 1 }}>
+        <Stack screenOptions={{ header: props => <CustomAppBar {...props} /> }}>
+            <Stack.Protected guard={!isLoggedIn}>
+                <Stack.Screen name='index' options={{ 
+                    title: 'Iniciar Sesión', 
+                    headerRight: props => <IconButton {...props} iconColor={ theme.colors.primary } icon='lightbulb-question-outline' contentStyle={{ backgroundColor: `${theme.colors.primary}20` }} />  }}/>
+            </Stack.Protected>
+            <Stack.Protected guard={isLoggedIn}>
+                <Stack.Screen name='(app)' options={{ headerShown: false }} />
+                <Stack.Screen 
+                    name='account'
+                    options={{
+                        title: 'Configuración del hogar'
+                    }}/>
+            </Stack.Protected>
+        </Stack>
+    </GestureHandlerRootView>
 }

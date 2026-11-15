@@ -27,6 +27,7 @@ export const CustomInput:React.FC<CustomInputProps>=({label, extraLabel, left, r
                 left && <IconButton icon={ left } size={ leftSize } iconColor={ props.leftColor } onPress={ props.onLeftPress }/>
             }
             {/* Input */}
+            
             <TextInput { ...props } style={[ styles.grow, { color: theme.colors.onBackground }] } placeholderTextColor={ '#a09f9f' }  />
             {/* Right */}
             {
@@ -53,9 +54,13 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         borderRadius: 15,
         minHeight: 55,
-        boxShadow: '0px 0px 5px rgba(0, 0, 0, 0.20)'
+        boxShadow: '0px 0px 5px rgba(0, 0, 0, 0.20)',
+        alignItems: 'center',
+        paddingHorizontal: 8,
     },
     grow: {
-        flexGrow: 1 
+        flex: 1, 
+        flexShrink: 1,
+        flexBasis: 0,
     }
 })
