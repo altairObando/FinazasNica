@@ -1,5 +1,6 @@
 import { CustomAppBar } from '@/components/misc/CustomAppBar';
 import { AppProvider } from '@/data/AppProvider';
+import { SnackbarProvider } from '@/data/SnackProvider';
 import { useAppProvider } from '@/hooks/useAppProvider';
 import { getPaperTheme, toNavigationTheme } from '@/theme';
 import { useFonts } from 'expo-font';
@@ -64,20 +65,22 @@ export function RootLayout() {
     }
 
     return <GestureHandlerRootView style={{ flex: 1 }}>
-        <Stack screenOptions={{ header: props => <CustomAppBar {...props} /> }}>
-            <Stack.Protected guard={!isLoggedIn}>
-                <Stack.Screen name='index' options={{ 
-                    title: 'Iniciar Sesión', 
-                    headerRight: props => <IconButton {...props} iconColor={ theme.colors.primary } icon='lightbulb-question-outline' contentStyle={{ backgroundColor: `${theme.colors.primary}20` }} />  }}/>
-            </Stack.Protected>
-            <Stack.Protected guard={isLoggedIn}>
-                <Stack.Screen name='(app)' options={{ headerShown: false }} />
-                <Stack.Screen 
-                    name='account'
-                    options={{
-                        title: 'Configuración del hogar'
-                    }}/>
-            </Stack.Protected>
-        </Stack>
+        <SnackbarProvider>
+            <Stack screenOptions={{ header: props => <CustomAppBar {...props} /> }}>
+                <Stack.Protected guard={!isLoggedIn}>
+                    <Stack.Screen name='index' options={{ 
+                        title: 'Iniciar Sesión', 
+                        headerRight: props => <IconButton {...props} iconColor={ theme.colors.primary } icon='lightbulb-question-outline' contentStyle={{ backgroundColor: `${theme.colors.primary}20` }} />  }}/>
+                </Stack.Protected>
+                <Stack.Protected guard={isLoggedIn}>
+                    <Stack.Screen name='(app)' options={{ headerShown: false }} />
+                    <Stack.Screen 
+                        name='account'
+                        options={{
+                            title: 'Configuración del hogar'
+                        }}/>
+                </Stack.Protected>
+            </Stack>
+        </SnackbarProvider>
     </GestureHandlerRootView>
 }
