@@ -1,17 +1,27 @@
-export interface Category {
+export type CategoryType = 'IN' | 'OUT';
+
+export interface BaseCategory {
+    name: string;
+    description: string;
+    type: CategoryType;
+    icon: string;
+    color: string;
+    is_active: boolean
+}
+
+export interface Category extends BaseCategory {
     id:          number;
-    is_active:   boolean;
+    team:        number;
     created_at:  Date;
     updated_at:  Date;
-    icon:        string;
-    color:       string;
     created_by:  number;
-    team:        number;
-    name:        string;
-    description: string;
-    type:        string;
 }
+
 export interface CategoryPaginated {
-    items: [];
+    items: Category[];
     count: number;
+}
+
+export interface NewCategory extends BaseCategory {
+    team_id: number;
 }

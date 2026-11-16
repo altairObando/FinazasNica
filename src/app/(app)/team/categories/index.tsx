@@ -1,16 +1,15 @@
 import { CategoryListItem } from '@/components/Categories/CategoryListItem';
 import { SummaryHeader } from '@/components/Categories/SummaryHeader';
 import FlatListItemSkeleton from '@/components/misc/FlatListItemSkeleton';
-import { Category } from '@/interfaces/Categories/Category';
+import { Category, CategoryType } from '@/interfaces/Categories/Category';
 import { CategorySummary } from '@/interfaces/Categories/CategorySummary';
 import { categoryService } from '@/lib/categoryService';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 import { Divider, Searchbar, SegmentedButtons, Surface, Text, useTheme } from 'react-native-paper';
 
 const DEFAULT_ITEMS = 10;
-export type CategoryType = 'IN' | 'OUT';
 export default function CategoriesScreen() {
     const router = useRouter();
     const [search, setSearch] = useState('');
@@ -35,8 +34,12 @@ export default function CategoriesScreen() {
     }, []);
 
     const fetchCategories = useCallback(async (pageToFetch: number, isInitial: boolean, categoryType: CategoryType ) => {
-        if (isInitial) setLoading(true);
-        else setFetchingMore(true);
+        if (isInitial) {
+            setPage(0);
+            setLoading(true);
+        } else {
+            setFetchingMore(true);
+        }
         try {
             const response = await categoryService.get({ page: pageToFetch, size: DEFAULT_ITEMS, type: categoryType });            
             if (isInitial) {
@@ -53,10 +56,10 @@ export default function CategoriesScreen() {
         }
     }, []);
 
-    // Carga inicial
-    useEffect(() => {
+    // Carga inicial y recarga al volver a la pantalla (p. ej. tras guardar una categoría)
+    useFocusEffect(useCallback(() => {
         fetchCategories(0, true, categoryType);
-    }, [fetchCategories, categoryType]);
+    }, [fetchCategories, categoryType]));
 
     // Carga de páginas siguientes
     useEffect(() => {

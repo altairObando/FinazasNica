@@ -1,4 +1,4 @@
-import { Category, CategoryPaginated } from '@/interfaces/Categories/Category';
+import { BaseCategory, Category, CategoryPaginated, NewCategory } from '@/interfaces/Categories/Category';
 import { CategorySummary } from '@/interfaces/Categories/CategorySummary';
 import { AxiosResponse } from 'axios';
 import api from './apiClient';
@@ -21,5 +21,13 @@ export const categoryService = {
         params.append('team_code', team_code);
         const response: AxiosResponse<CategorySummary> = await api.get('/categories/summary', { params });
         return response.data;
-    }
+    },
+    post: async( category: NewCategory): Promise<Category | undefined> => {
+        const response: AxiosResponse<Category> = await api.post('/categories/', category );
+        return response.data;
+    },
+    patch: async ( id: number, category: BaseCategory ): Promise<Category | undefined> => {
+        const response: AxiosResponse<Category> = await api.patch('/categories/' + id, category );
+        return response.data;
+    },
 }

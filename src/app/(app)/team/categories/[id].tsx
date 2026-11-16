@@ -2,18 +2,24 @@ import { CategoryIconColorSelect } from '@/components/Categories/CategoryIconCol
 import { BottomSheet } from '@/components/misc/BottomSheet';
 import { CustomInput } from '@/components/misc/CustomInput';
 import FlatListItemSkeleton from '@/components/misc/FlatListItemSkeleton';
+import { useSimpleSnackbar } from '@/data/SnackProvider';
+import { useAppProvider } from '@/hooks/useAppProvider';
+import { BaseCategory, Category, CategoryType, NewCategory } from '@/interfaces/Categories/Category';
 import { categoryService } from '@/lib/categoryService';
 import { toTransparentColor } from '@/lib/format';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Button, Card, IconButton, List, MD2Colors, SegmentedButtons, Surface, Text, useTheme } from 'react-native-paper';
-import { CategoryType } from '.';
 
 export default function CategoryForm(){
     const params = useLocalSearchParams();
     const theme = useTheme();
+    const router = useRouter();
+    const sb = useSimpleSnackbar();
+    const { user } = useAppProvider();
     const [ loading, setLoading ] = useState(true);
+    const [ processing, setProcessing ] = useState(false);
     const [ name, setName ] = useState('');
     const [ description, setDescription ] = useState('');
     const [ icon, setIcon ] = useState<string>('wallet');
@@ -27,6 +33,40 @@ export default function CategoryForm(){
         setModalMounted(true);
         setShowModal(true);
     },[]);
+    const onSubmitForm = async ()=>{
+        if( processing ) return;
+        try {
+            const dto = {
+                name: name,
+                description: description,
+                type: categoryType,
+                icon: icon,
+                color: color,
+            } as BaseCategory;
+            setProcessing(true);
+            let response: Category | undefined;
+            const isNew = !id || id === 0;
+            if( isNew ) {
+                const teamId = user?.team_id ?? 0;
+                const finalDto = {
+                    team_id: teamId,
+                    ...dto
+                } as NewCategory;
+                response = await categoryService.post(finalDto);
+            } else {
+                response = await categoryService.patch( id, dto );
+            }
+            if ( !response )
+                throw new Error('Error al obtener la categoria');
+            sb.info('Se han guardado todos los cambios correctamente.', 'Cerrar');
+            if( router.canGoBack() ) router.back();
+        } catch (error) {
+            const msg = error instanceof Error ? error.message : 'Process error';
+            sb.error(msg);
+        } finally {
+            setProcessing(false);
+        }
+    }
     const closeModal = useCallback(()=> setShowModal(false),[]);
     const categoryButtons = useMemo(()=>{
         return [
@@ -127,7 +167,7 @@ export default function CategoryForm(){
                 </View>
                 
             </Surface>
-            <Button icon='content-save' mode='contained'>
+            <Button icon='content-save' mode='contained' onPress={onSubmitForm} disabled={ processing } loading={ processing }>
                 Guardar
             </Button>
         </Surface>
