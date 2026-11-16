@@ -1,5 +1,5 @@
 import axios, { AxiosError } from 'axios';
-import { getValue } from './secureStore';
+import { getValue, removeValue } from './secureStore';
 
 const api = axios.create({
     baseURL: process.env.EXPO_PUBLIC_API_URL,
@@ -19,18 +19,22 @@ api.interceptors.request.use( async(config) =>{
     return Promise.reject(error);
 });
 
+const AUTH_LOGIN_PATH = '/auth/login';
+
 api.interceptors.response.use(
     response =>  response,
-    async error => {
-        console.log(error?.message ?? 'ERROR NO CONTROLADO');
-        if ( error.response && error.response.status === 401){
-            console.log('El token expiró o es inválido. Redirigir al Login.');
-            // await removeValue('api_token');
+    async (error: AxiosError<{ detail?: unknown }>) => {
+        const status = error.response?.status;
+        const isLoginRequest = error.config?.url?.includes(AUTH_LOGIN_PATH) ?? false;
+
+        if (status === 401 && !isLoginRequest) {
+            console.log('La sesión expiró o el token es inválido.');
+            await removeValue('api_token');
         }
-        if( error instanceof AxiosError){
-            let detail = error.response?.data?.detail;
-            if (detail)
-                return Promise.reject(detail);
+
+        const detail = error.response?.data?.detail;
+        if (typeof detail === 'string' && detail) {
+            return Promise.reject(detail);
         }
         return Promise.reject(error);
     }
