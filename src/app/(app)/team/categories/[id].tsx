@@ -26,8 +26,8 @@ export default function CategoryForm(){
     const [ color, setColor ] = useState<string>( theme.colors.primary );
     const [ showModal, setShowModal ] = useState(false);
     const [ modalMounted, setModalMounted ] = useState(false);
-    const id = typeof params === 'object' && Object.keys(params).includes('id') ? 
-               parseInt(Array.isArray(params.id) ? params.id[0]: params.id, 10) : 0;
+    const rawId = Array.isArray(params.id) ? params.id[0] : params.id;
+    const id = rawId ? parseInt(rawId, 10) : 0;
     const [ categoryType, setCategoryType ] = useState<CategoryType>('IN');
     const openModal = useCallback(()=>{
         setModalMounted(true);

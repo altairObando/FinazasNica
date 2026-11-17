@@ -10,6 +10,10 @@ import { Button, MD2Colors, Surface } from 'react-native-paper';
 export default function TeamTab(){
     const router = useRouter();
     const { logout } = useAppProvider();
+    const onLogout = async () => {
+        await logout();
+        router.replace('/');
+    };
     const switchAccount=()=>{
         // router.push('/account');
     }
@@ -34,7 +38,7 @@ export default function TeamTab(){
                 <Button onPress={ switchAccount } icon='swap-horizontal' mode='contained' buttonColor={MD2Colors.amberA700} style={{ flex: 1 }}>
                     Cambiar espacio
                 </Button>
-                <Button onPress={ logout } icon='exit-to-app' mode='contained' buttonColor={MD2Colors.red600} textColor={'#fff'} style={{ flex: 1 }}>
+                <Button onPress={ onLogout } icon='exit-to-app' mode='contained' buttonColor={MD2Colors.red600} textColor={'#fff'} style={{ flex: 1 }}>
                     Cerrar Sesión
                 </Button>
             </View>

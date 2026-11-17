@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Falsy, RecursiveArray, StyleSheet, ViewStyle } from 'react-native';
+import { StyleProp, StyleSheet, ViewStyle } from 'react-native';
 import Animated, {
     useAnimatedStyle,
     useSharedValue,
@@ -7,7 +7,7 @@ import Animated, {
     withSequence,
     withTiming
 } from 'react-native-reanimated';
-export const SkeletonPulse=({ style }: { style: ViewStyle | Falsy |  RecursiveArray<ViewStyle | Falsy> })=>{
+export const SkeletonPulse=({ style }: { style: StyleProp<ViewStyle> })=>{
     const opacity = useSharedValue(0.3);
     useEffect(()=>{
         opacity.value = withRepeat(

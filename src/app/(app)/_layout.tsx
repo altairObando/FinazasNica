@@ -4,10 +4,6 @@ import { StatusBar } from 'react-native';
 import { Icon, useTheme } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-export const unstable_settings = {
-  initialRouteName: 'home', 
-};
-
 const iconMapping = {
   'home': 'home',
   'budgets': 'file-chart',
@@ -15,6 +11,7 @@ const iconMapping = {
   'accounts': 'wallet',
   'team': 'account-group',
 };
+
 
 type ValidPages = keyof typeof iconMapping; 
 
@@ -36,7 +33,7 @@ export default function Layout() {
         tabBarActiveTintColor: theme.colors.primary,
         headerShown: false,
       }}>
-        <Tabs.Screen name='home'     options={{ title:'Inicio',       tabBarIcon: props => getIcon({ page: 'home',    isFocus: props.focused, size: props.size }) }} />
+        <Tabs.Screen name='index'    options={{ title:'Inicio',       tabBarIcon: props => getIcon({ page: 'home',     isFocus: props.focused, size: props.size }) }} />
         <Tabs.Screen name='budgets'  options={{ title:'Presupuestos', tabBarIcon: props => getIcon({ page: 'budgets',  isFocus: props.focused, size: props.size }) }}/>
         <Tabs.Screen name='expenses' options={{ title:'Registrar',    tabBarIcon: props => getIcon({ page: 'expenses', isFocus: props.focused, size: props.size }) }}/>
         <Tabs.Screen name='accounts' options={{ title:'Cuentas',      tabBarIcon: props => getIcon({ page: 'accounts', isFocus: props.focused, size: props.size }) }}/>
