@@ -89,12 +89,10 @@ export default function CategoryForm(){
                     }
                 },
             ]
-    },[categoryType]);
+    },[categoryType, theme ]);
     const iconColor = categoryType === 'IN' ? theme.colors.primary : MD2Colors.red800;
     useEffect(()=>{
-        if( id === 0) {
-            setLoading(false)
-        } else {
+        if( id > 0 ){
             categoryService.getById( id ).then( response => {
                 setColor(response.color);
                 setCategoryType(response.type as CategoryType );
@@ -102,6 +100,11 @@ export default function CategoryForm(){
                 setName(response.name);
                 setDescription(response.description);                
             }).finally(()=> setLoading(false));
+        } else {
+            new Promise((resolve)=>{
+                setLoading(false);
+                resolve(false);
+            })
         }
     },[id])
     if ( loading ) return <Surface style={{ flex: 1 }}>
