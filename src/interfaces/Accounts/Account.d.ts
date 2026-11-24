@@ -3,7 +3,7 @@ export interface BaseAccount {
     description:   string;
     currency:      string;
     opening_price: number;
-    limit_per_day: number;
+    limit_per_day?: number;
     icon:          string;
     color:         string;
     is_active:     boolean;

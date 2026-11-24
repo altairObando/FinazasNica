@@ -28,7 +28,7 @@ export const CustomInput:React.FC<CustomInputProps>=({label, extraLabel, left, r
             }
             {/* Input */}
             
-            <TextInput { ...props } style={[ styles.grow, { color: theme.colors.onBackground }] } placeholderTextColor={ '#a09f9f' }  />
+            <TextInput { ...props } style={[ styles.grow, { color: theme.colors.onBackground }, props.style ] } placeholderTextColor={ '#a09f9f' }  />
             {/* Right */}
             {
                 right && <IconButton icon={ right } size={ rightSize } iconColor={ props.rightColor } onPress={ props.onRightPress }/>
