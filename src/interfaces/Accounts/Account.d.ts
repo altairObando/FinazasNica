@@ -31,5 +31,5 @@ export interface AccountSummary {
     name: string;
     description: string;
     currency: string;
-    total: number;
+    total: string;
 }
