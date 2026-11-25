@@ -3,37 +3,44 @@ import { BottomSheet } from '@/components/misc/BottomSheet';
 import { CustomInput } from '@/components/misc/CustomInput';
 import { useSimpleSnackbar } from '@/data/SnackProvider';
 import { useAppProvider } from '@/hooks/useAppProvider';
-import { NewAccount } from '@/interfaces/Accounts/Account';
+import { Account, BaseAccount, NewAccount } from '@/interfaces/Accounts/Account';
 import { Currency } from '@/interfaces/general/currency';
 import { accountService } from '@/lib/accountService';
-import { toTransparentColor } from '@/lib/format';
+import { formatCurrency, toTransparentColor } from '@/lib/format';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Keyboard, KeyboardAvoidingView, Platform, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import { Button, Card, Icon, Surface, Text, useTheme } from 'react-native-paper';
 
 export default function AccountForm(){
     const params = useLocalSearchParams();
-    const { user } = useAppProvider();
+    const { user, getExchange } = useAppProvider();
     const theme = useTheme();
     const [ showModal, setShowModal ] = useState(false);
     const [ loading, setLoading ] = useState(false);
+    const [ saving, setSaving ] = useState(false);
     const router = useRouter();
     const sb = useSimpleSnackbar();
     // Fields
+    const [ id, setId ] = useState(0);
     const [ name, setName ] = useState('');
     const [ description, setDescription ] = useState('');
     const [ currency, setCurrency ] = useState<Currency>('NIO');
     const [ opening_price, setOpeningPrice ] = useState('');
     const [ icon, setIcon ] = useState('bank');
     const [ color, setColor ] = useState(theme.colors.primary);
+    
+    const rawId = Array.isArray(params.id) ? params.id[0] : params.id;
+    const accountId = rawId ? parseInt(rawId, 10) : 0;
+    const disabledButtons = saving || loading;
 
     const onCancel=()=>router.back();
     
     const onSubmitForm= async ()=>{
-        if( loading ) return;
+        if( saving ) return;
         try {
-            setLoading(true);
+            setSaving(true);
+            if( !name || name.length < 4 ) throw new Error('Por favor digita un nombre para esta cuenta');
             const entity = {
                 name: name,
                 description: description,
@@ -42,18 +49,62 @@ export default function AccountForm(){
                 icon: icon,
                 is_active: true,
                 opening_price: parseFloat(opening_price),
-                team_id: user?.team_id,
-            } as NewAccount;
-            const response = await accountService.add(entity);
-            sb.success(`Se ha registrado la cuenta ${ name } con id: ${response.id }`);
+            } as BaseAccount;
+            let response: Account;
+            if( id && accountId && id === accountId){
+                response = await accountService.update(id, entity);
+            } else {
+                let newEntity = {
+                    ...entity,
+                    team_id: user?.team_id,
+                } as NewAccount;
+                response = await accountService.add(newEntity);
+            }
+            if( !response || response.id === 0)
+                throw new Error('No se ha podido completar la operacion');
+
+            sb.success(`Acción completada. Cuenta ${ name } - id: ${response.id }`);
             onCancel()
         } catch (error) {
             let msg = error instanceof Error ? error.message : 'Error al procesar la solicitud';
             sb.error(msg);
         } finally {
-            setLoading(false)
+            setSaving(false);
         }
     }
+    const exchange = useMemo(()=>{
+        const rate = getExchange('USD');
+        return currency === 'NIO' ? 1/rate : rate
+    },[currency])
+
+    useEffect(()=>{
+        if( loading) return;
+        let cancelled = false;
+        const fetchAccount = async()=>{
+            try {
+                if( loading ) return;
+                console.log('api-call')
+                setLoading(true);
+                const account = await accountService.getById({ id: accountId });
+                if (cancelled) return;
+                setId(accountId);
+                setName(account.name);
+                setDescription(account.description);
+                setIcon(account.icon);
+                setColor(account.color);
+                setCurrency(account.currency as Currency );
+                setOpeningPrice(String(account.opening_price));
+            } catch (error) {
+                console.log(error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchAccount();
+        return ()=>{
+            cancelled = true;
+        }
+    },[ accountId ])
 
     return <>
     <KeyboardAvoidingView 
@@ -94,9 +145,10 @@ export default function AccountForm(){
                     keyboardType='numeric'
                     textAlign='left'
                     style={{ fontSize: 50 }}
+                    disabled={ accountId != 0 }
                 />
                 <Text>
-                    🔂 Tasa Oficial Estimada 1 USD ≈ 36.62 NIO
+                    {`🔂 Tasa Oficial Estimada 1 ${ currency } ≈ ${ formatCurrency({ amount: exchange }) }`}
                 </Text>
                 <Card>
                     <Card.Title title='Distintivo de la cuenta' titleStyle={{ fontWeight: 'bold', fontSize: 20  }} />
@@ -113,10 +165,10 @@ export default function AccountForm(){
                         </Button>
                     </Card.Content>
                 </Card>
-                <Button icon='plus-circle' mode='contained' onPress={onSubmitForm} disabled={loading} loading={ loading }>
+                <Button icon='plus-circle' mode='contained' onPress={onSubmitForm} disabled={disabledButtons} loading={ saving }>
                     Guardar esta cuenta
                 </Button>
-                <Button mode='elevated' onPress={onCancel} disabled={loading}>
+                <Button mode='elevated' onPress={onCancel} disabled={disabledButtons}>
                     Cancelar
                 </Button>
             </Surface>

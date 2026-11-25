@@ -20,3 +20,16 @@ export interface Account extends BaseAccount {
 export interface NewAccount {
     team_id:       number;
 }
+
+export interface ExchangeRate {
+    date:  Date;
+    base:  string;
+    quote: string;
+    rate:  number;
+}
+export interface AccountSummary {
+    name: string;
+    description: string;
+    currency: string;
+    total: number;
+}

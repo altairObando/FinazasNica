@@ -33,3 +33,11 @@ export const toTransparentColor = (color: string, opacity = 0.2): string => {
     }    
     return clearColor;
 }
+
+export const formatCurrency=( { amount, currency = 'NIO' }: {amount: number, currency?: string } ): string => {
+    const locale = currency === 'NIO' ? 'es-NI': 'en-US';
+    return Number(amount).toLocaleString(locale, {
+        style:'currency',
+        currency,
+    })
+}
