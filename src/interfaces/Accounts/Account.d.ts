@@ -1,0 +1,52 @@
+export interface BaseAccount {
+    name:          string;
+    description:   string;
+    currency:      string;
+    opening_price: number;
+    limit_per_day?: number;
+    icon:          string;
+    color:         string;
+    is_active:     boolean;
+}
+
+export interface Account extends BaseAccount {
+    id:            number;
+    balance:       number;
+    created_at:    Date;
+    updated_at:    Date;
+    created_by:    number;
+    team:          number;
+}
+export interface NewAccount {
+    team_id:       number;
+}
+
+export interface ExchangeRate {
+    date:  Date;
+    base:  string;
+    quote: string;
+    rate:  number;
+}
+export interface AccountSummary {
+    name: string;
+    description: string;
+    currency: string;
+    total: string;
+}
+
+export interface TransferRequest {
+    origin_id: number;
+    destination_id: number;
+    amount: number
+}
+
+export interface TransferResponse {
+    origin_id:           number;
+    destination_id:      number;
+    amount:              string;
+    destination_amount:  string;
+    reference:           string;
+    tx_date:             Date;
+    origin_balance:      string;
+    destination_balance: string;
+}

@@ -1,13 +1,13 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
 import { StatusBar } from 'react-native';
-import { Icon, useTheme } from 'react-native-paper';
+import { FAB, Icon, useTheme } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const iconMapping = {
   'home': 'home',
   'budgets': 'file-chart',
-  'expenses': 'plus-circle',
+  'expenses': 'plus',
   'accounts': 'wallet',
   'team': 'account-group',
 };
@@ -20,6 +20,17 @@ export default function Layout() {
   const getIcon=({ page = 'home', isFocus, size }: { page: ValidPages, isFocus: boolean, size: number })=>{
     const icon = iconMapping[page];
     const iconSource = !isFocus ? `${icon}-outline` : icon;
+    if ( page === 'expenses' ){
+      return <FAB 
+        icon={icon}
+        size='medium' 
+        color={ theme.colors.onPrimary }
+        style={{ 
+          marginTop: -25, 
+          backgroundColor: theme.colors.primary,
+          elevation: 6,
+        }} />
+    }
     return <Icon
       source={iconSource}
       size={size}
@@ -35,7 +46,7 @@ export default function Layout() {
       }}>
         <Tabs.Screen name='index'    options={{ title:'Inicio',       tabBarIcon: props => getIcon({ page: 'home',     isFocus: props.focused, size: props.size }) }} />
         <Tabs.Screen name='budgets'  options={{ title:'Presupuestos', tabBarIcon: props => getIcon({ page: 'budgets',  isFocus: props.focused, size: props.size }) }}/>
-        <Tabs.Screen name='expenses' options={{ title:'Registrar',    tabBarIcon: props => getIcon({ page: 'expenses', isFocus: props.focused, size: props.size }) }}/>
+        <Tabs.Screen name='expenses' options={{ title:'Registrar',    tabBarIcon: props => getIcon({ page: 'expenses', isFocus: props.focused, size: props.size }), tabBarLabel: '' }}/>
         <Tabs.Screen name='accounts' options={{ title:'Cuentas',      tabBarIcon: props => getIcon({ page: 'accounts', isFocus: props.focused, size: props.size }) }}/>
         <Tabs.Screen name='team'     options={{ title:'Familia',      tabBarIcon: props => getIcon({ page: 'team',     isFocus: props.focused, size: props.size }) }}/>
       </Tabs>

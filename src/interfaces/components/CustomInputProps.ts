@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
-import { GestureResponderEvent, StyleProp, TextInputProps, ViewStyle } from 'react-native'
+import { GestureResponderEvent, StyleProp, ViewStyle } from 'react-native'
+import { TextInputProps } from 'react-native-paper'
 
 export interface CustomInputProps extends TextInputProps {
     // Label Props
@@ -9,6 +10,7 @@ export interface CustomInputProps extends TextInputProps {
     left?: string | undefined
     leftSize?: number | undefined
     leftColor?: string | undefined
+    leftComponent?: ReactNode | undefined
     onLeftPress?: ( event?: GestureResponderEvent) => void,
     // Right right
     right?: string | undefined

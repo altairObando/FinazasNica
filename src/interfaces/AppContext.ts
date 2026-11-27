@@ -6,5 +6,6 @@ export interface AppContext  {
     isLoading: boolean,
     user: User | null | undefined
     setUser: React.Dispatch<React.SetStateAction<User | null | undefined>>
-    logout: ()=> Promise<void>
+    logout: ()=> Promise<void>,
+    getExchange: (currency: string) => number,
 }
