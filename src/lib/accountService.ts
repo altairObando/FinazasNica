@@ -1,4 +1,4 @@
-import { Account, AccountSummary, BaseAccount, ExchangeRate, NewAccount } from '@/interfaces/Accounts/Account'
+import { Account, AccountSummary, BaseAccount, ExchangeRate, NewAccount, TransferRequest, TransferResponse } from '@/interfaces/Accounts/Account'
 import { Paginated } from "@/interfaces/general/paginated"
 import { AxiosResponse } from "axios"
 import api from "./apiClient"
@@ -37,6 +37,10 @@ export const accountService = {
         const params = new URLSearchParams();
         params.append('team_id', String(teamId));
         const response = await api.get('/accounts/summary', { params });
+        return response.data;
+    },
+    requestTransfer: async( transfer: TransferRequest): Promise<TransferResponse> =>{
+        const response: AxiosResponse<TransferResponse> = await api.post('/accounts/transfer', transfer);
         return response.data;
     }
 }

@@ -33,3 +33,20 @@ export interface AccountSummary {
     currency: string;
     total: string;
 }
+
+export interface TransferRequest {
+    origin_id: number;
+    destination_id: number;
+    amount: number
+}
+
+export interface TransferResponse {
+    origin_id:           number;
+    destination_id:      number;
+    amount:              string;
+    destination_amount:  string;
+    reference:           string;
+    tx_date:             Date;
+    origin_balance:      string;
+    destination_balance: string;
+}

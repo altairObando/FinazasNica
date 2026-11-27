@@ -5,5 +5,6 @@ export default function AccountLayout(){
     return <Stack screenOptions={{ header: props => <CustomAppBar {...props} />}}>
         <Stack.Screen name='index' options={{ title: 'Cuentas' }}  />
         <Stack.Screen name='[id]' options={{ title: 'Formulario'}} />
+        <Stack.Screen name='transfer' options={{ title: 'Transferencia'}} />
     </Stack>
 }

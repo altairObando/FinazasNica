@@ -55,7 +55,7 @@ export default function AccountsTab(){
             const account = item as Account;
             const local = account.currency === 'NIO' ? account.balance : account.balance * usdRate,
                   foreign = local / usdRate;
-            return <Card onPress={()=> router.push({ pathname: '/(app)/accounts/[id]', params:{ id: account.id }})}>
+            return <Card>
                 <Card.Title
                     left={ props => <Icon source={ account.icon } size={props.size} color={ account.color } /> }
                     title={ <Text variant='titleMedium'>{account.name.trim()}</Text> }
@@ -64,7 +64,8 @@ export default function AccountsTab(){
                         icon='folder-edit-outline' 
                         size={props.size} 
                         iconColor={account.color}
-                        containerColor={toTransparentColor(account.color)}/>}
+                        containerColor={toTransparentColor(account.color)}
+                        onPress={()=> router.push({ pathname: '/(app)/accounts/[id]', params:{ id: account.id }})}/>}
                     />
                 <Card.Content>
                     <Text variant='titleMedium' style={{ fontWeight: 'bold' }}>Saldo Disponible</Text>
@@ -73,6 +74,7 @@ export default function AccountsTab(){
                 </Card.Content>
                 <Card.Actions>
                     <Button icon='invoice-list-outline'>Movimientos</Button>
+                    <Button icon='receipt-text-arrow-right-outline' onPress={()=> router.push({ pathname: '/(app)/accounts/transfer', params:{ originAccountId: account.id }})}>Transferir</Button>
                 </Card.Actions>
             </Card>
         } catch (error) {
@@ -131,7 +133,7 @@ export default function AccountsTab(){
                 right={ () => <Chip textStyle={{ color: theme.colors.onPrimary }}>{`T.C. ${ usdRate.toFixed(2) }`}</Chip>}
                 rightStyle={{ marginRight: 8 }}/>
             <Card.Content>
-                <Button mode='contained' icon='folder-swap-outline'>
+                <Button mode='contained' icon='folder-swap-outline' onPress={()=> router.push('/(app)/accounts/transfer')}>
                     Realizar Transferencia Interna
                 </Button>
             </Card.Content>

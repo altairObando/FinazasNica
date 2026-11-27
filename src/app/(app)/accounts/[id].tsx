@@ -1,6 +1,7 @@
 import { CategoryIconColorSelect } from '@/components/Categories/CategoryIconColorSelect';
 import { BottomSheet } from '@/components/misc/BottomSheet';
 import { CustomInput } from '@/components/misc/CustomInput';
+import { SkeletonPulse } from '@/components/misc/SkeletonPulse';
 import { useSimpleSnackbar } from '@/data/SnackProvider';
 import { useAppProvider } from '@/hooks/useAppProvider';
 import { Account, BaseAccount, NewAccount } from '@/interfaces/Accounts/Account';
@@ -154,13 +155,16 @@ export default function AccountForm(){
                     <Card.Title title='Distintivo de la cuenta' titleStyle={{ fontWeight: 'bold', fontSize: 20  }} />
                     <Card.Content style={{ alignItems:'center', justifyContent:'center', gap: 10 }}>
                         <View style={{ backgroundColor: toTransparentColor(color), borderRadius: 50, padding: 8 }}>
-                            <Icon 
+                            { !loading && <Icon 
                                 source={icon} 
                                 color={ color }
                                 size={64}
-                                />
+                                />}
+                            {
+                                loading && <SkeletonPulse style={{ minHeight: 64, width: 64, borderRadius: 50 }} />
+                            }
                         </View>
-                        <Button icon='pencil' mode='contained' onPress={()=> setShowModal(true) }>
+                        <Button icon='pencil' mode='contained' onPress={()=> setShowModal(true) } disabled={ disabledButtons }>
                             Modificar
                         </Button>
                     </Card.Content>
